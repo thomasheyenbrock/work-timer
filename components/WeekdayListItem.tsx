@@ -4,6 +4,7 @@ import Tag from "./Tag";
 import { Weekday } from "../pages/index";
 import FlatButton from "./FlatButton";
 import TextField from "./TextField";
+import TrashIcon from "../icons/Trash2";
 
 const WeekdayListItem: React.FC<{
   weekday: Weekday;
@@ -53,6 +54,19 @@ const WeekdayListItem: React.FC<{
                   });
                 }}
               />
+              <FlatButton>
+                <TrashIcon
+                  onClick={() => {
+                    props.onChangeWeekday({
+                      ...props.weekday,
+                      workTimes: [
+                        ...props.weekday.workTimes.slice(0, index),
+                        ...props.weekday.workTimes.slice(index + 1)
+                      ]
+                    });
+                  }}
+                />
+              </FlatButton>
             </div>
           ))}
           <FlatButton
@@ -68,34 +82,45 @@ const WeekdayListItem: React.FC<{
         </div>
         <div>
           {props.weekday.breaks.map((breakTime, index) => (
-            <TextField
-              key={index}
-              label="Pausendauer"
-              placeholder="00:00"
-              value={breakTime.duration}
-              onChange={e => {
-                const duration = e.target.value;
-                props.onChangeWeekday({
-                  ...props.weekday,
-                  breaks: [
-                    ...props.weekday.breaks.slice(0, index),
-                    {
-                      duration
-                    },
-                    ...props.weekday.breaks.slice(index + 1)
-                  ]
-                });
-              }}
-            />
+            <div className="inline" key={index}>
+              <TextField
+                label="Pausendauer"
+                placeholder="00:00"
+                value={breakTime.duration}
+                onChange={e => {
+                  const duration = e.target.value;
+                  props.onChangeWeekday({
+                    ...props.weekday,
+                    breaks: [
+                      ...props.weekday.breaks.slice(0, index),
+                      {
+                        duration
+                      },
+                      ...props.weekday.breaks.slice(index + 1)
+                    ]
+                  });
+                }}
+              />
+              <FlatButton>
+                <TrashIcon
+                  onClick={() => {
+                    props.onChangeWeekday({
+                      ...props.weekday,
+                      breaks: [
+                        ...props.weekday.breaks.slice(0, index),
+                        ...props.weekday.breaks.slice(index + 1)
+                      ]
+                    });
+                  }}
+                />
+              </FlatButton>
+            </div>
           ))}
           <FlatButton
             onClick={() => {
               props.onChangeWeekday({
                 ...props.weekday,
-                breaks: [
-                  ...props.weekday.breaks,
-                  { duration: "" }
-                ]
+                breaks: [...props.weekday.breaks, { duration: "" }]
               });
             }}
           >

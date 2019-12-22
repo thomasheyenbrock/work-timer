@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "build:icons": "svgr --ext tsx -d icons icons"
   },
   "dependencies": {
     "@zeit/swr": "0.1.2",
@@ -16,6 +17,7 @@
     "react-dom": "16.12.0"
   },
   "devDependencies": {
+    "@svgr/cli": "4.3.3",
     "@types/node": "12.12.21",
     "@types/react": "16.9.17",
     "typescript": "3.7.4"
