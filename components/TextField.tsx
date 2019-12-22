@@ -22,7 +22,6 @@ const TextField: React.FC<JSX.IntrinsicElements["input"] & {
       }
       input:focus {
         outline: none;
-        box-shadow: 0 2px 0 white;
       }
     `}</style>
   </div>

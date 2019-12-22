@@ -16,12 +16,8 @@ type WorkTime = {
   end: string;
 };
 
-type Duration = {
-  hours: number;
-  minutes: number;
-};
 type Break = {
-  duration: Duration;
+  duration: string;
 };
 
 export type Weekday = {

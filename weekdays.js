@@ -40,16 +40,13 @@ module.exports = [
     delta: +1,
     workTimes: [
       {
-        start: "2019-10-25T07:00:00.000Z",
-        end: "2019-10-25T15:00:00.000Z"
+        start: "07:00",
+        end: "15:00"
       }
     ],
     breaks: [
       {
-        duration: {
-          hours: 1,
-          minutes: 15
-        }
+        duration: "01:15"
       }
     ]
   }

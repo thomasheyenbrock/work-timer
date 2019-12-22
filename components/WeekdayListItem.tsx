@@ -67,8 +67,40 @@ const WeekdayListItem: React.FC<{
           </FlatButton>
         </div>
         <div>
-          <TextField label="Pausendauer" placeholder="00:00" />
-          <FlatButton>+ weitere Pause erfassen</FlatButton>
+          {props.weekday.breaks.map((breakTime, index) => (
+            <TextField
+              key={index}
+              label="Pausendauer"
+              placeholder="00:00"
+              value={breakTime.duration}
+              onChange={e => {
+                const duration = e.target.value;
+                props.onChangeWeekday({
+                  ...props.weekday,
+                  breaks: [
+                    ...props.weekday.breaks.slice(0, index),
+                    {
+                      duration
+                    },
+                    ...props.weekday.breaks.slice(index + 1)
+                  ]
+                });
+              }}
+            />
+          ))}
+          <FlatButton
+            onClick={() => {
+              props.onChangeWeekday({
+                ...props.weekday,
+                breaks: [
+                  ...props.weekday.breaks,
+                  { duration: "" }
+                ]
+              });
+            }}
+          >
+            + weitere Pause erfassen
+          </FlatButton>
         </div>
       </div>
     )}
