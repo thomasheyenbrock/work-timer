@@ -22,7 +22,7 @@ type Break = {
   duration: Duration;
 };
 
-type Weekday = {
+export type Weekday = {
   date: string;
   delta: number;
   workTimes: WorkTime[];
@@ -57,14 +57,23 @@ const WeekView: NextPage<{
       <ul>
         {businessDaysOfWeek.map((businessDayOfWeek, index) => (
           <WeekdayListItem
-            date={businessDayOfWeek}
-            delta={Math.round((Math.random() * 2 - 1) * 4)}
+            weekday={{
+              date: businessDayOfWeek.toISOString(),
+              delta: Math.round((Math.random() * 2 - 1) * 4),
+              workTimes: [],
+              breaks: []
+            }}
             key={businessDayOfWeek.toISOString()}
             showDivider={index < businessDaysOfWeek.length - 1}
+            isActive={true}
           />
         ))}
       </ul>
       <style jsx>{`
+        h1 {
+          font-size: 1.5rem;
+          padding: 16px;
+        }
         ul {
           list-style: none;
         }
