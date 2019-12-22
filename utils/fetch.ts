@@ -1,11 +1,14 @@
 import fetch from "isomorphic-unfetch";
 
-const customFetch: typeof fetch = async function(...args) {
-  const res = await fetch(args[0], {
+const customFetch = async <JSON = any>(
+  input: RequestInfo,
+  init?: RequestInit
+): Promise<JSON> => {
+  const res = await fetch(input, {
     method: "GET",
-    ...args[1],
+    ...init,
     headers: {
-      ...((args[1] || {}).headers || {}),
+      ...((init || {}).headers || {}),
       Accept: "application/json"
     }
   });

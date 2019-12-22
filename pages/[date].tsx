@@ -2,7 +2,7 @@ import startOfWeek from "date-fns/startOfWeek";
 import endOfWeek from "date-fns/endOfWeek";
 import parseISO from "date-fns/parseISO";
 import { NextPage } from "next";
-import useSWR, { mutate, trigger } from "@zeit/swr";
+import useSWR, { mutate, trigger } from "swr";
 import Layout from "../components/Layout";
 import format from "../utils/format";
 import customFetch from "../utils/fetch";
@@ -29,7 +29,7 @@ export type Weekday = {
 const WeekView: NextPage<{
   startOfWeekDateString: string;
   backendUrl: string;
-  initialData: unknown;
+  initialData: Weekday[];
 }> = ({
   startOfWeekDateString = startOfWeek(new Date()).toISOString(),
   backendUrl,
@@ -42,7 +42,7 @@ const WeekView: NextPage<{
     {
       initialData,
       revalidateOnFocus: false
-    } as any
+    }
   );
   const setWeekdays = async (updatedWeekdays: Weekday[]) => {
     mutate(backendUrl, updatedWeekdays, false);
