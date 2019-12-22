@@ -14,7 +14,7 @@ const WeekdayListItem: React.FC<{
     <div className="header">
       <span>{format(parseISO(props.weekday.date), "EEEE")}</span>
       <Tag color={props.weekday.delta <= 0 ? "green" : "red"}>
-        {props.weekday.delta}
+        {props.weekday.delta} h
       </Tag>
     </div>
     {props.isActive && (
@@ -52,7 +52,7 @@ const WeekdayListItem: React.FC<{
         padding: 16px;
       }
       .content > * + * {
-        margin: 16px 0 0;
+        margin: 32px 0 0;
       }
       .inline {
         display: flex;

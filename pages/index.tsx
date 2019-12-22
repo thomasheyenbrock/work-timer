@@ -3,11 +3,12 @@ import setDay from "date-fns/setDay";
 import endOfWeek from "date-fns/endOfWeek";
 import parseISO from "date-fns/parseISO";
 import { NextPage } from "next";
-import useSWR from "@zeit/swr";
+import useSWR, { mutate, trigger } from "@zeit/swr";
 import Layout from "../components/Layout";
 import format from "../utils/format";
 import customFetch from "../utils/fetch";
 import WeekdayListItem from "../components/WeekdayListItem";
+import de from "date-fns/locale/de";
 
 type WorkTime = {
   start: string;
@@ -31,40 +32,47 @@ export type Weekday = {
 
 const WeekView: NextPage<{
   startOfWeekDateString: string;
-  url: string;
+  backendUrl: string;
   initialData: unknown;
 }> = ({
   startOfWeekDateString = startOfWeek(new Date()).toISOString(),
-  url,
+  backendUrl,
   initialData
 }) => {
   const startOfWeekDate = parseISO(startOfWeekDateString);
-  const { data, error } = useSWR<Weekday[]>(url, customFetch, {
+  const { data: weekdays, error } = useSWR<Weekday[]>(backendUrl, customFetch, {
     initialData
   } as any);
-  console.log(data, error);
-  const businessDaysOfWeek = [
-    setDay(startOfWeekDate, 1),
-    setDay(startOfWeekDate, 2),
-    setDay(startOfWeekDate, 3),
-    setDay(startOfWeekDate, 4),
-    setDay(startOfWeekDate, 5)
-  ];
+  const setWeekdays = async (updatedWeekdays: Weekday[]) => {
+    mutate(backendUrl, updatedWeekdays, false);
+    // send text to the API
+    await customFetch(backendUrl, {
+      method: "POST",
+      body: JSON.stringify(updatedWeekdays),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    });
+    trigger(backendUrl);
+  };
+
+  if (error) {
+    return <Layout>Error loading the data</Layout>
+  }
+  if (!weekdays) {
+    return <Layout>No Data</Layout>;
+  }
 
   return (
     <Layout>
       <h1>Woche vom {format(startOfWeekDate, "do MMMM")}</h1>
       <ul>
-        {businessDaysOfWeek.map((businessDayOfWeek, index) => (
+        {weekdays.map((weekday, index) => (
           <WeekdayListItem
-            weekday={{
-              date: businessDayOfWeek.toISOString(),
-              delta: Math.round((Math.random() * 2 - 1) * 4),
-              workTimes: [],
-              breaks: []
-            }}
-            key={businessDayOfWeek.toISOString()}
-            showDivider={index < businessDaysOfWeek.length - 1}
+            weekday={weekday}
+            key={weekday.date}
+            showDivider={index < weekdays.length - 1}
             isActive={true}
           />
         ))}
@@ -82,17 +90,18 @@ const WeekView: NextPage<{
   );
 };
 
-WeekView.getInitialProps = async ({ req }) => {
-  const startOfWeekDate = startOfWeek(new Date());
+WeekView.getInitialProps = async () => {
+  const startOfWeekDate = startOfWeek(new Date("2019-10-19"), { locale: de });
   const endOfWeekDate = endOfWeek(startOfWeekDate);
-  const url = `https://worktime-pj0rmd2tq.now.sh/api/work-slot?from=${encodeURIComponent(
+  const backendUrl = `http://localhost:3000/api/weekdays?from=${encodeURIComponent(
     startOfWeekDate.toISOString()
   )}&to=${encodeURIComponent(endOfWeekDate.toISOString())}`;
-  const data = customFetch(url);
+  const data = await customFetch(backendUrl, { method: "GET" });
+  console.log(data);
   return {
     startOfWeekDateString: startOfWeekDate.toISOString(),
     initialData: data,
-    url
+    backendUrl
   };
 };
 
