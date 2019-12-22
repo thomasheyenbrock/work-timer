@@ -9,6 +9,7 @@ import format from "../utils/format";
 import customFetch from "../utils/fetch";
 import WeekdayListItem from "../components/WeekdayListItem";
 import de from "date-fns/locale/de";
+import absoluteUrl from "../utils/absolute-url";
 
 type WorkTime = {
   start: string;
@@ -58,7 +59,7 @@ const WeekView: NextPage<{
   };
 
   if (error) {
-    return <Layout>Error loading the data</Layout>
+    return <Layout>Error loading the data</Layout>;
   }
   if (!weekdays) {
     return <Layout>No Data</Layout>;
@@ -90,10 +91,11 @@ const WeekView: NextPage<{
   );
 };
 
-WeekView.getInitialProps = async () => {
+WeekView.getInitialProps = async ({ req }) => {
+  const { origin } = absoluteUrl(req, "localhost:3000");
   const startOfWeekDate = startOfWeek(new Date("2019-10-19"), { locale: de });
   const endOfWeekDate = endOfWeek(startOfWeekDate);
-  const backendUrl = `http://localhost:3000/api/weekdays?from=${encodeURIComponent(
+  const backendUrl = `${origin}/api/weekdays?from=${encodeURIComponent(
     startOfWeekDate.toISOString()
   )}&to=${encodeURIComponent(endOfWeekDate.toISOString())}`;
   const data = await customFetch(backendUrl, { method: "GET" });
