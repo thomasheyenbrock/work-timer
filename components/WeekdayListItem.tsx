@@ -1,7 +1,7 @@
 import parseISO from "date-fns/parseISO";
 import format from "../utils/format";
 import Tag from "./Tag";
-import { Weekday } from "../pages/index";
+import { Weekday } from "../pages/[date]";
 import FlatButton from "./FlatButton";
 import TextField from "./TextField";
 import TrashIcon from "../icons/Trash2";
