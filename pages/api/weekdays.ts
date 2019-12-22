@@ -14,6 +14,7 @@ import {
 } from "fs";
 import { promisify } from "util";
 import { resolve } from "path";
+import { de } from "date-fns/locale";
 
 const writeFile = promisify(writeFileCallback);
 const readFile = promisify(readFileCallback);
@@ -58,10 +59,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     res.end();
     return;
   }
-  const startDate = startOfWeek(parseISO(date));
+  const startDate = startOfWeek(parseISO(date), { locale: de });
   const weekdayKeys = Array.from({ length: 7 }).map((_, index) =>
-    format(setDay(startDate, index), "yyyy-MM-dd")
-  );
+    format(setDay(startDate, index, { locale: de }), "yyyy-MM-dd")
+  ).sort();
   if (req.method === "POST") {
     if (!Array.isArray(req.body)) {
       res.statusCode = 400;

@@ -1,5 +1,4 @@
 import startOfWeek from "date-fns/startOfWeek";
-import setDay from "date-fns/setDay";
 import endOfWeek from "date-fns/endOfWeek";
 import parseISO from "date-fns/parseISO";
 import { NextPage } from "next";
@@ -37,10 +36,14 @@ const WeekView: NextPage<{
   initialData
 }) => {
   const startOfWeekDate = parseISO(startOfWeekDateString);
-  const { data: weekdays, error } = useSWR<Weekday[]>(backendUrl, customFetch, {
-    initialData,
-    revalidateOnFocus: false
-  } as any);
+  const { data: weekdays, error, isValidating } = useSWR<Weekday[]>(
+    backendUrl,
+    customFetch,
+    {
+      initialData,
+      revalidateOnFocus: false
+    } as any
+  );
   const setWeekdays = async (updatedWeekdays: Weekday[]) => {
     mutate(backendUrl, updatedWeekdays, false);
     // send text to the API
@@ -58,6 +61,9 @@ const WeekView: NextPage<{
   if (error) {
     return <Layout>Error loading the data</Layout>;
   }
+  if (!weekdays && isValidating) {
+    return <Layout>Loading</Layout>;
+  }
   if (!weekdays) {
     return <Layout>No Data</Layout>;
   }
@@ -74,7 +80,7 @@ const WeekView: NextPage<{
               ...weekdays.slice(index + 1)
             ]);
           };
-          return(
+          return (
             <WeekdayListItem
               weekday={weekday}
               onChangeWeekday={updateWeekday}
@@ -99,10 +105,9 @@ const WeekView: NextPage<{
 };
 
 WeekView.getInitialProps = async ({ req, query }) => {
-  const date = !Array.isArray(query.date) ? query.date : "2019-10-19"
+  const date = !Array.isArray(query.date) ? query.date : "2019-10-19";
   const { origin } = absoluteUrl(req, "localhost:3000");
   const startOfWeekDate = startOfWeek(new Date(date), { locale: de });
-  const endOfWeekDate = endOfWeek(startOfWeekDate);
   const backendUrl = `${origin}/api/weekdays?date=${date}`;
   const data = await customFetch(backendUrl, { method: "GET" });
   return {
