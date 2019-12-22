@@ -69,14 +69,24 @@ const WeekView: NextPage<{
     <Layout>
       <h1>Woche vom {format(startOfWeekDate, "do MMMM")}</h1>
       <ul>
-        {weekdays.map((weekday, index) => (
-          <WeekdayListItem
-            weekday={weekday}
-            key={weekday.date}
-            showDivider={index < weekdays.length - 1}
-            isActive={true}
-          />
-        ))}
+        {weekdays.map((weekday, index) => {
+          const updateWeekday = (updatedWeekday: Weekday) => {
+            setWeekdays([
+              ...weekdays.slice(0, index),
+              updatedWeekday,
+              ...weekdays.slice(index + 1)
+            ]);
+          };
+          return(
+            <WeekdayListItem
+              weekday={weekday}
+              onChangeWeekday={updateWeekday}
+              key={weekday.date}
+              showDivider={index < weekdays.length - 1}
+              isActive={true}
+            />
+          );
+        })}
       </ul>
       <style jsx>{`
         h1 {

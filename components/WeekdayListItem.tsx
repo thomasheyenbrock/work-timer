@@ -9,6 +9,7 @@ const WeekdayListItem: React.FC<{
   weekday: Weekday;
   showDivider?: boolean;
   isActive: boolean;
+  onChangeWeekday: (weekday: Weekday) => void;
 }> = props => (
   <li>
     <div className="header">
@@ -20,11 +21,50 @@ const WeekdayListItem: React.FC<{
     {props.isActive && (
       <div className="content">
         <div>
-          <div className="inline">
-            <TextField label="Von" placeholder="00:00" />
-            <TextField label="Bis" placeholder="00:00" />
-          </div>
-          <FlatButton>+ weiteren Zeitraum erfassen</FlatButton>
+          {props.weekday.workTimes.map((workTime, index) => (
+            <div className="inline" key={index}>
+              <TextField
+                label="Von"
+                placeholder="00:00"
+                value={workTime.start}
+                onChange={e => {
+                  props.onChangeWeekday({
+                    ...props.weekday,
+                    workTimes: [
+                      ...props.weekday.workTimes.slice(0, index),
+                      { ...workTime, start: e.target.value },
+                      ...props.weekday.workTimes.slice(index + 1)
+                    ]
+                  });
+                }}
+              />
+              <TextField
+                label="Bis"
+                placeholder="00:00"
+                value={workTime.end}
+                onChange={e => {
+                  props.onChangeWeekday({
+                    ...props.weekday,
+                    workTimes: [
+                      ...props.weekday.workTimes.slice(0, index),
+                      { ...workTime, end: e.target.value },
+                      ...props.weekday.workTimes.slice(index + 1)
+                    ]
+                  });
+                }}
+              />
+            </div>
+          ))}
+          <FlatButton
+            onClick={() => {
+              props.onChangeWeekday({
+                ...props.weekday,
+                workTimes: [...props.weekday.workTimes, { start: "", end: "" }]
+              });
+            }}
+          >
+            + weiteren Zeitraum erfassen
+          </FlatButton>
         </div>
         <div>
           <TextField label="Pausendauer" placeholder="00:00" />
