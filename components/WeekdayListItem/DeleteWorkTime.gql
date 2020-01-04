@@ -1,0 +1,9 @@
+mutation DeleteWorkTime ($id: ID!) {
+  deleteWorkTime(
+    id: $id
+  ) {
+    id
+    start
+    end
+  }
+}

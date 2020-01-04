@@ -65,6 +65,10 @@ const WeekView: NextPage<{
               key={weekday.date}
               showDivider={index < data.weekDays.length - 1}
               isActive={true}
+              weekdayQueryVariables={{
+                startDate: startOfWeekDateString,
+                endDate: endOfWeekDateString
+              }}
             />
           );
         })}
