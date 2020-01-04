@@ -1,0 +1,15 @@
+query Weekdays ($startDate: DateTime, $endDate: DateTime) {
+  weekDays(startDate: $startDate endDate: $endDate) {
+    id
+    date
+    workTimes {
+      id
+      start
+      end
+    }
+    breaks {
+      id
+      duration
+    }
+  }
+}

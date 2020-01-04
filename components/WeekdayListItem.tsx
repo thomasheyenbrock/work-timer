@@ -1,10 +1,10 @@
 import parseISO from "date-fns/parseISO";
 import format from "../utils/format";
 import Tag from "./Tag";
-import { Weekday } from "../pages/[date]";
 import FlatButton from "./FlatButton";
 import TextField from "./TextField";
 import TrashIcon from "../icons/Trash2";
+import { Weekday } from "../generated/apollo-components";
 
 const WeekdayListItem: React.FC<{
   weekday: Weekday;
@@ -15,9 +15,9 @@ const WeekdayListItem: React.FC<{
   <li>
     <div className="header">
       <span>{format(parseISO(props.weekday.date), "EEEE")}</span>
-      <Tag color={props.weekday.delta <= 0 ? "green" : "red"}>
+      {/* <Tag color={props.weekday.delta <= 0 ? "green" : "red"}>
         {props.weekday.delta} h
-      </Tag>
+      </Tag> */}
     </div>
     {props.isActive && (
       <div className="content">
@@ -27,7 +27,7 @@ const WeekdayListItem: React.FC<{
               <TextField
                 label="Von"
                 placeholder="00:00"
-                value={workTime.start}
+                value={format(parseISO(workTime.start), "HH:ss")}
                 onChange={e => {
                   props.onChangeWeekday({
                     ...props.weekday,
@@ -42,7 +42,7 @@ const WeekdayListItem: React.FC<{
               <TextField
                 label="Bis"
                 placeholder="00:00"
-                value={workTime.end}
+                value={format(parseISO(workTime.end), "HH:ss")}
                 onChange={e => {
                   props.onChangeWeekday({
                     ...props.weekday,
@@ -71,10 +71,7 @@ const WeekdayListItem: React.FC<{
           ))}
           <FlatButton
             onClick={() => {
-              props.onChangeWeekday({
-                ...props.weekday,
-                workTimes: [...props.weekday.workTimes, { start: "", end: "" }]
-              });
+              alert("TBD");
             }}
           >
             + weiteren Zeitraum erfassen
@@ -86,19 +83,14 @@ const WeekdayListItem: React.FC<{
               <TextField
                 label="Pausendauer"
                 placeholder="00:00"
-                value={breakTime.duration}
+                value={
+                  breakTime.duration
+                    ? format(new Date().setTime(breakTime.duration), "HH:ss")
+                    : "00:00"
+                }
                 onChange={e => {
                   const duration = e.target.value;
-                  props.onChangeWeekday({
-                    ...props.weekday,
-                    breaks: [
-                      ...props.weekday.breaks.slice(0, index),
-                      {
-                        duration
-                      },
-                      ...props.weekday.breaks.slice(index + 1)
-                    ]
-                  });
+                  alert("TBD")
                 }}
               />
               <FlatButton>
@@ -118,10 +110,7 @@ const WeekdayListItem: React.FC<{
           ))}
           <FlatButton
             onClick={() => {
-              props.onChangeWeekday({
-                ...props.weekday,
-                breaks: [...props.weekday.breaks, { duration: "" }]
-              });
+              alert("TBD")
             }}
           >
             + weitere Pause erfassen

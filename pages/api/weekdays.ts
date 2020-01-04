@@ -10,7 +10,9 @@ import {
 } from "date-fns";
 import {
   writeFile as writeFileCallback,
-  readFile as readFileCallback
+  readFile as readFileCallback,
+  existsSync,
+  writeFileSync
 } from "fs";
 import { promisify } from "util";
 import { resolve } from "path";
@@ -18,6 +20,11 @@ import { de } from "date-fns/locale";
 
 const writeFile = promisify(writeFileCallback);
 const readFile = promisify(readFileCallback);
+
+if (!existsSync(resolve("weekdays.json"))) {
+  console.log("Creating weekdays json file");
+  writeFileSync(resolve("weekdays.json"), JSON.stringify({}));
+}
 
 const createWeekdayStub = (date: string) => ({
   date,
@@ -60,9 +67,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
   const startDate = startOfWeek(parseISO(date), { locale: de });
-  const weekdayKeys = Array.from({ length: 7 }).map((_, index) =>
-    format(setDay(startDate, index, { locale: de }), "yyyy-MM-dd")
-  ).sort();
+  const weekdayKeys = Array.from({ length: 7 })
+    .map((_, index) =>
+      format(setDay(startDate, index, { locale: de }), "yyyy-MM-dd")
+    )
+    .sort();
   if (req.method === "POST") {
     if (!Array.isArray(req.body)) {
       res.statusCode = 400;
