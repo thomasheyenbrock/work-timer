@@ -1,0 +1,44 @@
+generator photon {
+  provider = "photonjs"
+}
+
+datasource db {
+  provider = "mysql"
+  url = "***"
+}
+
+model Post {
+  id        String   @default(cuid()) @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  published Boolean  @default(false)
+  title     String
+  content   String?
+  author    User?
+}
+
+model User {
+  id       String  @default(cuid()) @id
+  email    String  @unique
+  password String
+  name     String?
+  posts    Post[]
+}
+
+model Break {
+  id       String @default(cuid()) @id
+  duration Int
+}
+
+model WorkTime {
+  id    String   @default(cuid()) @id
+  start DateTime
+  end   DateTime
+}
+
+model Weekday {
+  id        String     @default(cuid()) @id
+  date      DateTime
+  workTimes WorkTime[]
+  breaks    Break[]
+}
