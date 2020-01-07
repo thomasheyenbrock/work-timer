@@ -1,7 +1,9 @@
 {
   "name": "graphql-auth",
   "license": "MIT",
-  "engines": { "node": "12.x" },
+  "engines": {
+    "node": "12.x"
+  },
   "scripts": {
     "start": "node dist/server",
     "clean": "rm -rf dist",
@@ -10,7 +12,7 @@
     "generate:prisma": "prisma2 generate",
     "generate:nexus": "ts-node --transpile-only src/schema",
     "postinstall": "npm -s run generate",
-    "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server",
+    "dev": "ts-node-dev -r dotenv/config --no-notify --respawn --transpileOnly src/server dotenv_config_path=../.env",
     "seed": "ts-node prisma/seed"
   },
   "dependencies": {
@@ -30,6 +32,7 @@
     "@types/jsonwebtoken": "8.3.5",
     "@types/node": "12.12.22",
     "@types/ws": "6.0.4",
+    "dotenv": "8.2.0",
     "prisma2": "2.0.0-preview019",
     "ts-node": "8.5.4",
     "ts-node-dev": "1.0.0-pre.44",

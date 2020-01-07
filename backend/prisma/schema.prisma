@@ -4,7 +4,7 @@ generator photon {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:prisma@localhost:3306/prisma"
+  url      = env("MYSQL_URL")
 }
 
 model Post {

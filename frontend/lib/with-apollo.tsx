@@ -8,7 +8,7 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import { ApolloClient } from "apollo-client";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
-import fetch from "isomorphic-unfetch";
+import unfetch from "isomorphic-unfetch";
 import { NextPage } from "next";
 
 let globalApolloClient: ApolloClient<NormalizedCacheObject> | null = null;
@@ -146,12 +146,17 @@ function initApolloClient(initialState?: {}) {
  * @param  {Object} [initialState={}]
  */
 function createApolloClient(initialState = {}) {
+  const isBrowser = typeof window !== "undefined";
   return new ApolloClient({
-    ssrMode: typeof window === "undefined", // Disables forceFetch on the server (so queries are only run once)
+    connectToDevTools: isBrowser,
+    ssrMode: !isBrowser, // Disables forceFetch on the server (so queries are only run once)
     link: new HttpLink({
-      uri: process.env.BACKEND_URL ? process.env.BACKEND_URL : "http://localhost:4000", // Server URL (must be absolute)
+      uri: process.env.BACKEND_URL
+        ? process.env.BACKEND_URL
+        : "http://localhost:4000", // Server URL (must be absolute)
       credentials: "same-origin", // Additional fetch() options like `credentials` or `headers`
-      fetch
+      // Use fetch() polyfill on the server
+      fetch: isBrowser ? fetch : unfetch
     }),
     cache: new InMemoryCache().restore(initialState)
   });
