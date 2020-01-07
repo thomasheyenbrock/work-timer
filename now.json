@@ -19,23 +19,20 @@
     },
     {
       "src": "backend/src/server.ts",
-      "use": "@now/node",
+      "use": "@now/node@canary",
       "config": {
-        "maxLambdaSize": "20mb"
+        "maxLambdaSize": "25mb"
       }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/graphql",
-      "dest": "/backend/src/server.ts"
+      "source": "/graphql",
+      "destination": "/backend/src/server.ts"
     },
     {
-      "src": "/(.*)",
-      "dest": "/frontend/$1",
-      "headers": {
-        "x-request-path": "$1"
-      }
+      "source": "/(.*)",
+      "destination": "/frontend/$1"
     }
   ]
 }

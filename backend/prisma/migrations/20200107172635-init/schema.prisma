@@ -1,5 +1,6 @@
 generator photon {
   provider = "photonjs"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -25,35 +26,20 @@ model User {
   posts    Post[]
 }
 
-// type WorkTime = {
-//   start: string;
-//   end: string;
-// };
-
-// type Break = {
-//   duration: string;
-// };
-
-// export type Weekday = {
-//   date: string;
-//   delta: number;
-//   workTimes: WorkTime[];
-//   breaks: Break[];
-// };
-
 model Break {
   id       String @default(cuid()) @id
-  duration Int
+  duration Int?
 }
 
 model WorkTime {
   id    String   @default(cuid()) @id
-  start DateTime
-  end   DateTime
+  start DateTime?
+  end   DateTime?
 }
 
 model Weekday {
   id        String     @default(cuid()) @id
+  date      DateTime
   workTimes WorkTime[]
   breaks    Break[]
 }
