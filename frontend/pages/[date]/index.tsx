@@ -17,13 +17,9 @@ import { formatRFC3339 } from "date-fns";
 const WeekView: NextPage<{
   startOfWeekDateString: string;
   endOfWeekDateString: string;
-  backendUrl: string;
-  initialData: Weekday[];
 }> = ({
   startOfWeekDateString = startOfWeek(new Date()).toISOString(),
-  endOfWeekDateString,
-  backendUrl,
-  initialData
+  endOfWeekDateString
 }) => {
   const { data, loading, error } = useWeekdaysQuery({
     variables: {
@@ -88,19 +84,14 @@ const WeekView: NextPage<{
 
 WeekView.getInitialProps = async ({ req, query }) => {
   const date = !Array.isArray(query.date) ? query.date : "2019-10-19";
-  const { origin } = absoluteUrl(req, "localhost:3000");
   const startOfWeekDate = startOfWeek(new Date(date), { locale: de });
   const endOfWeekDate = endOfWeek(new Date(date), { locale: de });
-  const backendUrl = `${origin}/api/weekdays?date=${date}`;
-  const data = await customFetch(backendUrl, { method: "GET" });
   return {
     startOfWeekDateString: format(
       startOfWeekDate,
       "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
     ),
-    endOfWeekDateString: format(endOfWeekDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
-    initialData: data,
-    backendUrl
+    endOfWeekDateString: format(endOfWeekDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
   };
 };
 

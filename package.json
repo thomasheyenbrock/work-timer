@@ -4,6 +4,7 @@
   "main": "index.js",
   "author": "Philipp Sporrer <philipp.sporrer@commercetools.de>",
   "license": "MIT",
+  "engines": { "node": "12.x" },
   "scripts": {
     "start": "docker-compose up",
     "build": "docker-compose build",
