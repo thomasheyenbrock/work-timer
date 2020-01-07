@@ -23,7 +23,10 @@ const WeekdayListItem: React.FC<{
     endDate: string;
   };
 }> = props => {
-  const [createWorkTime] = useCreateWorkTimeMutation({
+  const [
+    createWorkTime,
+    { loading: isCreatingWorkTime }
+  ] = useCreateWorkTimeMutation({
     update(cache, { data }) {
       if (!data) {
         return;
@@ -103,7 +106,11 @@ const WeekdayListItem: React.FC<{
                 <TextField
                   label="Von"
                   placeholder="00:00"
-                  value={format(parseISO(workTime.start), "HH:ss")}
+                  value={
+                    workTime.start
+                      ? format(parseISO(workTime.start), "HH:ss")
+                      : "00:00"
+                  }
                   onChange={e => {
                     props.onChangeWeekday({
                       ...props.weekday,
@@ -118,7 +125,11 @@ const WeekdayListItem: React.FC<{
                 <TextField
                   label="Bis"
                   placeholder="00:00"
-                  value={format(parseISO(workTime.end), "HH:ss")}
+                  value={
+                    workTime.end
+                      ? format(parseISO(workTime.end), "HH:ss")
+                      : "00:00"
+                  }
                   onChange={e => {
                     props.onChangeWeekday({
                       ...props.weekday,
@@ -150,8 +161,11 @@ const WeekdayListItem: React.FC<{
                   }
                 });
               }}
+              disabled={isCreatingWorkTime}
             >
-              + weiteren Zeitraum erfassen
+              {isCreatingWorkTime
+                ? "Zeitraum wird erstellt..."
+                : "+ weiteren Zeitraum erfassen"}
             </FlatButton>
           </div>
           <div>
