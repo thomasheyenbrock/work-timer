@@ -27,7 +27,7 @@ const WeekView: NextPage<{
       endDate: endOfWeekDateString
     }
   });
-  console.log("apollo", data, loading, error);
+
   const startOfWeekDate = parseISO(startOfWeekDateString);
 
   const setWeekdays = async (updatedWeekdays: Weekday[]) => {};

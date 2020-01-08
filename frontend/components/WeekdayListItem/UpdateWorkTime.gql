@@ -1,0 +1,11 @@
+mutation UpdateWorkTime ($id: ID!, $start: DateTime, $end: DateTime) {
+  updateWorkTime(
+    id: $id
+    start: $start
+    end: $end
+  ) {
+    id
+    start
+    end
+  }
+}

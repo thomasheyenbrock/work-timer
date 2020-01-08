@@ -208,6 +208,21 @@ export type DeleteWorkTimeMutation = (
   ) }
 );
 
+export type UpdateWorkTimeMutationVariables = {
+  id: Scalars['ID'],
+  start?: Maybe<Scalars['DateTime']>,
+  end?: Maybe<Scalars['DateTime']>
+};
+
+
+export type UpdateWorkTimeMutation = (
+  { __typename?: 'Mutation' }
+  & { updateWorkTime: (
+    { __typename?: 'WorkTime' }
+    & Pick<WorkTime, 'id' | 'start' | 'end'>
+  ) }
+);
+
 export type WeekdaysQueryVariables = {
   startDate?: Maybe<Scalars['DateTime']>,
   endDate?: Maybe<Scalars['DateTime']>
@@ -300,6 +315,42 @@ export function useDeleteWorkTimeMutation(baseOptions?: ApolloReactHooks.Mutatio
 export type DeleteWorkTimeMutationHookResult = ReturnType<typeof useDeleteWorkTimeMutation>;
 export type DeleteWorkTimeMutationResult = ApolloReactCommon.MutationResult<DeleteWorkTimeMutation>;
 export type DeleteWorkTimeMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteWorkTimeMutation, DeleteWorkTimeMutationVariables>;
+export const UpdateWorkTimeDocument = gql`
+    mutation UpdateWorkTime($id: ID!, $start: DateTime, $end: DateTime) {
+  updateWorkTime(id: $id, start: $start, end: $end) {
+    id
+    start
+    end
+  }
+}
+    `;
+export type UpdateWorkTimeMutationFn = ApolloReactCommon.MutationFunction<UpdateWorkTimeMutation, UpdateWorkTimeMutationVariables>;
+
+/**
+ * __useUpdateWorkTimeMutation__
+ *
+ * To run a mutation, you first call `useUpdateWorkTimeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWorkTimeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWorkTimeMutation, { data, loading, error }] = useUpdateWorkTimeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      start: // value for 'start'
+ *      end: // value for 'end'
+ *   },
+ * });
+ */
+export function useUpdateWorkTimeMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateWorkTimeMutation, UpdateWorkTimeMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateWorkTimeMutation, UpdateWorkTimeMutationVariables>(UpdateWorkTimeDocument, baseOptions);
+      }
+export type UpdateWorkTimeMutationHookResult = ReturnType<typeof useUpdateWorkTimeMutation>;
+export type UpdateWorkTimeMutationResult = ApolloReactCommon.MutationResult<UpdateWorkTimeMutation>;
+export type UpdateWorkTimeMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateWorkTimeMutation, UpdateWorkTimeMutationVariables>;
 export const WeekdaysDocument = gql`
     query Weekdays($startDate: DateTime, $endDate: DateTime) {
   weekDays(startDate: $startDate, endDate: $endDate) {

@@ -1,6 +1,7 @@
 import parseISO from "date-fns/parseISO";
 import format from "../../utils/format";
 import Tag from "../Tag";
+import WorkTimeListItem from "../WorkTimeListItem";
 import FlatButton from "../FlatButton";
 import TextField from "../TextField";
 import TrashIcon from "../../icons/Trash2";
@@ -8,10 +9,12 @@ import {
   Weekday,
   useCreateWorkTimeMutation,
   useDeleteWorkTimeMutation,
+  useUpdateWorkTimeMutation,
   WeekdaysDocument,
   WeekdaysQuery,
   WeekdaysQueryVariables
 } from "../../generated/apollo-components";
+import TimeField from "../TimeField";
 
 const WeekdayListItem: React.FC<{
   weekday: Weekday;
@@ -57,39 +60,6 @@ const WeekdayListItem: React.FC<{
       });
     }
   });
-  const [deleteWorkTime] = useDeleteWorkTimeMutation({
-    update(cache, { data }) {
-      if (!data) {
-        return;
-      }
-      const weekdaysQueryResult = cache.readQuery<
-        WeekdaysQuery,
-        WeekdaysQueryVariables
-      >({
-        query: WeekdaysDocument,
-        variables: props.weekdayQueryVariables
-      });
-      if (!weekdaysQueryResult || !weekdaysQueryResult.weekDays) {
-        return;
-      }
-      cache.writeQuery({
-        query: WeekdaysDocument,
-        variables: props.weekdayQueryVariables,
-        data: {
-          weekDays: weekdaysQueryResult.weekDays.map(weekday =>
-            weekday.id === props.weekday.id
-              ? {
-                  ...weekday,
-                  workTimes: weekday.workTimes.filter(
-                    workTime => workTime.id !== data.deleteWorkTime.id
-                  )
-                }
-              : weekday
-          )
-        }
-      });
-    }
-  });
   return (
     <li>
       <div className="header">
@@ -102,56 +72,13 @@ const WeekdayListItem: React.FC<{
         <div className="content">
           <div>
             {props.weekday.workTimes.map((workTime, index) => (
-              <div className="inline" key={index}>
-                <TextField
-                  label="Von"
-                  placeholder="00:00"
-                  value={
-                    workTime.start
-                      ? format(parseISO(workTime.start), "HH:ss")
-                      : "00:00"
-                  }
-                  onChange={e => {
-                    props.onChangeWeekday({
-                      ...props.weekday,
-                      workTimes: [
-                        ...props.weekday.workTimes.slice(0, index),
-                        { ...workTime, start: e.target.value },
-                        ...props.weekday.workTimes.slice(index + 1)
-                      ]
-                    });
-                  }}
-                />
-                <TextField
-                  label="Bis"
-                  placeholder="00:00"
-                  value={
-                    workTime.end
-                      ? format(parseISO(workTime.end), "HH:ss")
-                      : "00:00"
-                  }
-                  onChange={e => {
-                    props.onChangeWeekday({
-                      ...props.weekday,
-                      workTimes: [
-                        ...props.weekday.workTimes.slice(0, index),
-                        { ...workTime, end: e.target.value },
-                        ...props.weekday.workTimes.slice(index + 1)
-                      ]
-                    });
-                  }}
-                />
-                <FlatButton>
-                  <TrashIcon
-                    onClick={() => {
-                      deleteWorkTime({
-                        variables: { id: workTime.id },
-                        refetchQueries: [""]
-                      });
-                    }}
-                  />
-                </FlatButton>
-              </div>
+              <WorkTimeListItem
+                date={props.weekday.date}
+                workTime={workTime}
+                weekdayId={props.weekday.id}
+                key={index}
+                weekdayQueryVariables={props.weekdayQueryVariables}
+              />
             ))}
             <FlatButton
               onClick={() => {
